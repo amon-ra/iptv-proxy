@@ -8,7 +8,7 @@ from threading import Timer
 from flask import Flask, Response
 from requests import get
 from urllib.parse import urlparse
-
+from iptvtools import iptv_filter
 app = Flask(__name__)
 config = Config(app.root_path)
 m3u_parser = parser.Parser()
@@ -93,8 +93,15 @@ def reload_timer():
     Timer(60 * config.RELOAD_INTERVAL_MIN, lambda: reload_timer(config)).start()
 
 def reload(config: Config):
+    m3u_location = config.M3U_LOCATION
+    if config.FILTER:
+        f = config.FILTER.split(" ")
+        f += ['-i',f'{config.M3U_LOCATION}']
+        f += ['-o','/tmp/list.m3u']
+        iptv_filter.main(f)
+        m3u_location = '/tmp/list.m3u'
     m3u_parser.parse_m3u(
-        config.M3U_LOCATION,
+        m3u_location,
         config.M3U_HOST,
         config.M3U_PORT,
         config.USE_HTTPS,

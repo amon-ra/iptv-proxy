@@ -1,4 +1,5 @@
 # iptv-proxy
+
 Simple Flask proxy app for m3u files. This should be used alongside a VPN container. If you don't have a VPN, then there's no point of using an m3u proxy. I recommend the [bubuntux/nordvpn](https://github.com/bubuntux/nordlynx) docker image to be run alongside this.
 
 When the app first loads, it will prefix all URLs in the m3u file with the proxy endpoint.
@@ -20,7 +21,7 @@ http://your-local-ip-address:8080/proxy/stream/https://url-to-mlb-network-stream
 
 Then instead of pointing your IPTV player to the original m3u file, you will set up your IPTV player to point to:
 
-http://your-local-ip-address:8080/static/iptv.m3u
+<http://your-local-ip-address:8080/static/iptv.m3u>
 
 This will route all IPTV traffic to go accross a VPN, which can be helpful if your TV doesn't support VPN configurations.
 
@@ -53,6 +54,7 @@ services:
     restart: unless-stopped
     network_mode: service:nordlynx
     environment:
+      - FILTER=--group-include "^(ESPANA|ADULTS|PEL.CULAS)"
       - M3U_LOCATION= # Required. Either a path or URL.
       - RELOAD_INTERVAL_MIN=60 # Not required and defaults to 60. This is used to update the /static directory with the latest m3u file.
       - LISTEN_PORT=8080

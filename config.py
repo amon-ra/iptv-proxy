@@ -10,6 +10,10 @@ class Config:
         self._config.read(os.path.join(root_path, 'config.ini'))
     
     @property
+    def FILTER(self):
+        return os.getenv('FILTER', self._config.get('APP', 'FILTER'))
+
+    @property
     def M3U_LOCATION(self):
         return os.getenv('M3U_LOCATION', self._config.get('APP', 'M3U_LOCATION'))
 
